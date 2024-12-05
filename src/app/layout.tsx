@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Button } from "@/components/ui/button";
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  // children,
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -29,10 +29,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* {children} */}
-        {/* <h1>helloworld</h1> */}
-        <Button variant={"teritary"} size={"xs"}>click me </Button>
-        <p className="text-red-500">shakila</p>
+        {children}
+      
       </body>
     </html>
   );

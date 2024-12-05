@@ -31,7 +31,7 @@ export default function RootLayout({
       >
         {/* {children} */}
         {/* <h1>helloworld</h1> */}
-        <Button>click me </Button>
+        <Button variant={"teritary"} size={"xs"}>click me </Button>
         <p className="text-red-500">shakila</p>
       </body>
     </html>

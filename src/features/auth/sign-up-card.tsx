@@ -1,6 +1,10 @@
+import { z } from "zod";
+
+import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +15,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import Link from "next/link"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+
+const formSchema = z.object({
+  name: z.string().trim().min(1, "الزامی است"),
+  email: z.string().trim().min(1, "ایمیل الزامی است").email(),
+  password: z.string().min(8, "کمتر از 8 کراکتر لازم است"),
+});
 
 const SignUpCard = () => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log({ values });
+  };
+  
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex items-center justify-center text-center p-7">
@@ -33,37 +62,65 @@ const SignUpCard = () => {
         <DottedSeparator />
       </div>
       <CardContent className="p-7">
-        <form action="" className="space-y-4">
-        <Input
-            required
-            type="text"
-            value={""}
-            onChange={() => {}}
-            placeholder="لطفا اسم خود را وارد نمایید"
-            disabled={false}
-          />
-          <Input
-            required
-            type="email"
-            value={""}
-            onChange={() => {}}
-            placeholder="لطفا ایمیل خود را وارد نمایید"
-            disabled={false}
-          />
-          <Input
-            required
-            type="password"
-            value={""}
-            onChange={() => {}}
-            placeholder="لطفا رمز خود را وارد نمایید"
-            disabled={false}
-            min={8}
-            max={256}
-          />
-          <Button disabled={false} size={"lg"} className="w-full">
-            ثبت نام
-          </Button>
-        </form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+
+            <FormField
+              name="name"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="اسم خود را وارد نمایید"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name="email"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder=" ایمیل خود را وارد نمایید"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name="password"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder=" پسوورد خود را وارد نمایید"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button disabled={false} size={"lg"} className="w-full">
+              ثبت نام
+            </Button>
+          </form>
+        </Form>
       </CardContent>
       <div className="px-7">
         <DottedSeparator />

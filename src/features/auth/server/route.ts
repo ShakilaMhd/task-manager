@@ -2,7 +2,7 @@
 import { Hono } from "hono"
 import { ID } from "node-appwrite"
 import { zValidator } from "@hono/zod-validator"
-import { setCookie } from "hono/cookie"
+import { deleteCookie, setCookie } from "hono/cookie"
 
 import { createAdminClient } from "@/lib/appwrite"
 
@@ -49,6 +49,12 @@ const app = new Hono()
             sameSite: "strict",
             maxAge: 60 * 60 * 24 * 30
         })
+        return c.json({ succes: true })
+    })
+
+    .post("/logout", (c) => {
+        deleteCookie(c, AUTH_COOKIE)
+
         return c.json({ succes: true })
     })
 

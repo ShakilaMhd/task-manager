@@ -1,0 +1,1 @@
+export const AUTH_COOKIE = "cwa-task-manager-session"

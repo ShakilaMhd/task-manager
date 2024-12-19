@@ -20,10 +20,8 @@ import Link from "next/link";
 import { loginSchema } from "../schemas";
 import { useLogin } from "../api/use-login";
 
-
-
 const SignInCard = () => {
-const {mutate} = useLogin(  )
+  const { mutate } = useLogin();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -34,7 +32,7 @@ const {mutate} = useLogin(  )
   });
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    mutate({json:values})
+    mutate({ json: values });
   };
 
   return (
@@ -93,7 +91,7 @@ const {mutate} = useLogin(  )
               max={256}
             /> */}
             <Button disabled={false} size={"lg"} className="w-full">
-              ثبت نام
+              ورود
             </Button>
           </form>
         </Form>

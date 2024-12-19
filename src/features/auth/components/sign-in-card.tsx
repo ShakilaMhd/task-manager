@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -9,30 +10,34 @@ import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+
 import {
   Form,
-  FormControl,
+  FromControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
+  FormControl,
 } from "@/components/ui/form";
 import Link from "next/link";
-import { loginSchema } from "../schemas";
-import { useLogin } from "../api/use-login";
 
-const SignInCard = () => {
-  const { mutate } = useLogin();
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1, "required"),
+});
 
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+export const SignInCard = () => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    mutate({ json: values });
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log({ values });
   };
 
   return (
@@ -40,9 +45,11 @@ const SignInCard = () => {
       <CardHeader className="flex items-center justify-center text-center p-7">
         <CardTitle className="text-2xl">خوش آمدید</CardTitle>
       </CardHeader>
-      <div className="px-7 ">
+
+      <div className="px-7">
         <DottedSeparator />
       </div>
+
       <CardContent className="p-7">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -52,11 +59,7 @@ const SignInCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="لطفا ایمیل خود را وارد نمایید"
-                    />
+                    <Input {...field} type="email" placeholder="email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -69,11 +72,7 @@ const SignInCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="لطفا رمز خود را وارد نمایید"
-                    />
+                    <Input {...field} type="password" placeholder="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -85,12 +84,12 @@ const SignInCard = () => {
               type="password"
               value={""}
               onChange={() => {}}
-              placeholder="لطفا رمز خود را وارد نمایید"
+              placeholder="password"
               disabled={false}
               min={8}
               max={256}
             /> */}
-            <Button disabled={false} size={"lg"} className="w-full">
+            <Button className="w-full" disabled={false} size="lg">
               ورود
             </Button>
           </form>
@@ -99,11 +98,11 @@ const SignInCard = () => {
       <div className="px-7">
         <DottedSeparator />
       </div>
-      <CardContent className="p-7 flex flex-col gap-y-4">
+      <CardContent className="flex p-7 flex-col gap-y-4">
         <Button
           disabled={false}
           variant="secondary"
-          size={"lg"}
+          size="lg"
           className="w-full"
         >
           Login with Google
@@ -112,7 +111,7 @@ const SignInCard = () => {
         <Button
           disabled={false}
           variant="secondary"
-          size={"lg"}
+          size="lg"
           className="w-full"
         >
           Login with Github
@@ -122,16 +121,11 @@ const SignInCard = () => {
       <div className="px-7">
         <DottedSeparator />
       </div>
-      <CardContent className="p-7 flex items-center justify-conetnt">
-        <p>
-          dont have an account?
-          <Link href={"/sign-up"}>
-            <span className="text-blue-700">&nbsp;sign-up</span>
-          </Link>
+      <CardContent className="p-7 flex items-center justify-center">
+        <p>dont have an account?
+          <Link href="/sign-up"><span className="text-blue-700">signup</span></Link>
         </p>
       </CardContent>
     </Card>
   );
 };
-
-export default SignInCard;

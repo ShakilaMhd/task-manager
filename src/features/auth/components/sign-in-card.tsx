@@ -8,21 +8,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 import {
   Form,
-  FromControl,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormControl,
 } from "@/components/ui/form";
-import Link from "next/link";
 import { loginSchema } from "../schemas";
 import { useLogin } from "../api/use-login";
+
+// const formSchema = z.object({
+//   email: z.string().email(),
+//   password: z.string().min(1, "required"),
+// });
 
 export const SignInCard = () => {
   const { mutate } = useLogin();
@@ -36,15 +39,15 @@ export const SignInCard = () => {
   });
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    mutate({json: values});
+    // console.log({ values });
+    mutate({ json: values });
   };
 
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex items-center justify-center text-center p-7">
-        <CardTitle className="text-2xl">خوش آمدید</CardTitle>
+        <CardTitle className="text-2xl">welcome back</CardTitle>
       </CardHeader>
-
       <div className="px-7">
         <DottedSeparator />
       </div>
@@ -78,18 +81,8 @@ export const SignInCard = () => {
               )}
             />
 
-            {/* <Input
-              required
-              type="password"
-              value={""}
-              onChange={() => {}}
-              placeholder="password"
-              disabled={false}
-              min={8}
-              max={256}
-            /> */}
-            <Button className="w-full" disabled={false} size="lg">
-              ورود
+            <Button disabled={false} size="lg" className="w-full">
+              login
             </Button>
           </form>
         </Form>
@@ -97,36 +90,26 @@ export const SignInCard = () => {
       <div className="px-7">
         <DottedSeparator />
       </div>
-      <CardContent className="flex p-7 flex-col gap-y-4">
+      <CardContent className=" p-7 flex flex-col gap-y-4 ">
         <Button
           disabled={false}
           variant="secondary"
           size="lg"
           className="w-full"
         >
-          Login with Google
+          login with google
           <FcGoogle className="mr-2 size-5" />
         </Button>
+
         <Button
           disabled={false}
           variant="secondary"
           size="lg"
           className="w-full"
         >
-          Login with Github
+          login with github
           <FaGithub className="mr-2 size-5" />
         </Button>
-      </CardContent>
-      <div className="px-7">
-        <DottedSeparator />
-      </div>
-      <CardContent className="p-7 flex items-center justify-center">
-        <p>
-          dont have an account?
-          <Link href="/sign-up">
-            <span className="text-blue-700">signup</span>
-          </Link>
-        </p>
       </CardContent>
     </Card>
   );

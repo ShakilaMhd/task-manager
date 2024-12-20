@@ -3,7 +3,6 @@ import { handle } from "hono/vercel"
 
 import auth from "@/features/auth/server/route"
 
-
 const app = new Hono().basePath("/api")
 
 const routes = app

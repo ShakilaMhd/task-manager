@@ -2,12 +2,17 @@
 
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
-import { Inter } from "next/font/google";
-
-import { cn } from "@/lib/utils";
+// import { Inter } from "next/font/google";
+import { Vazirmatn } from "next/font/google";
+// import { cn } from "@/lib/utils";
 import { QueryProvider } from "@/components/query-provider";
 
 import "./globals.css";
+
+const vazirmatn = Vazirmatn({
+  subsets: ["latin", "arabic"],
+  display: "swap",
+});
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -20,7 +25,7 @@ import "./globals.css";
 //   weight: "100 900",
 // });
 
-const inter = Inter({ subsets: ["cyrillic"] });
+// const inter = Inter({ subsets: ["cyrillic"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -33,10 +38,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
+    <html  lang="fa" dir="rtl" className={vazirmatn.className}>
       <body
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        className={cn(inter.className, "antialiased min-h-screen")}
+        // className={cn(inter.className, "antialiased min-h-screen")}
       >
         <QueryProvider>{children}</QueryProvider>
       </body>

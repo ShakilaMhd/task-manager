@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useCurrent } from "@/features/auth/api/use-current";
 import { useLogout } from "@/features/auth/api/use-logout";
+import { UserButton } from "@/features/auth/components/user-button";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -19,7 +20,7 @@ const TestPage = () => {
 
   return (
     <div>
-      only visible user <Button onClick={() => mutate()}>Logout</Button>
+      only visible user <UserButton />
     </div>
   );
 };

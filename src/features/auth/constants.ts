@@ -1,1 +1,1 @@
-export const AUTH_COOKIE = "cwa-task-manager-session"
+export const AUTH_COOKIE = "sh-task-manager-session"

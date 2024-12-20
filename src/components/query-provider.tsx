@@ -52,3 +52,4 @@ export const QueryProvider = ({ children }: QueryProviderProps) => {
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
+  

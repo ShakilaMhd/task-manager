@@ -1,31 +1,40 @@
 import { z } from "zod";
 
-import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
-  CardDescription,
   CardHeader,
+  CardContent,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { registerSchema } from "../schemas";
 import { useRegister } from "../api/use-register";
 
-const SignUpCard = () => {
+// const formSchema = z.object({
+//   name: z.string().trim().min(1, "required"),
+//   email: z.string().email(),
+//   password: z.string().min(8, "required"),
+// });
+
+export const SignUpCard = () => {
   const { mutate } = useRegister();
 
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -44,21 +53,12 @@ const SignUpCard = () => {
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex items-center justify-center text-center p-7">
-        <CardTitle className="text-2xl">ثبت نام کنید</CardTitle>
-        <CardDescription>
-          By signing up you agree to our{" "}
-          <Link href="/privacy">
-            <span className="text-blue-700">privacy policy</span>
-          </Link>{" "}
-          and{" "}
-          <Link href="/terms">
-            <span className="text-blue-700">Term of service</span>
-          </Link>
-        </CardDescription>
+        <CardTitle className="text-2xl">sign up</CardTitle>
       </CardHeader>
-      <div className="px-7 ">
+      <div className="px-7">
         <DottedSeparator />
       </div>
+
       <CardContent className="p-7">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -68,11 +68,7 @@ const SignUpCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="اسم خود را وارد نمایید"
-                    />
+                    <Input {...field} type="text" placeholder="name" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -85,11 +81,7 @@ const SignUpCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder=" ایمیل خود را وارد نمایید"
-                    />
+                    <Input {...field} type="email" placeholder="email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -102,19 +94,15 @@ const SignUpCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder=" پسوورد خود را وارد نمایید"
-                    />
+                    <Input {...field} type="password" placeholder="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button disabled={false} size={"lg"} className="w-full">
-              ثبت نام
+            <Button disabled={false} size="lg" className="w-full">
+              login
             </Button>
           </form>
         </Form>
@@ -122,40 +110,27 @@ const SignUpCard = () => {
       <div className="px-7">
         <DottedSeparator />
       </div>
-      <CardContent className="p-7 flex flex-col gap-y-4">
+      <CardContent className=" p-7 flex flex-col gap-y-4 ">
         <Button
           disabled={false}
           variant="secondary"
-          size={"lg"}
+          size="lg"
           className="w-full"
         >
-          Login with Google
+          login with google
           <FcGoogle className="mr-2 size-5" />
         </Button>
+
         <Button
           disabled={false}
           variant="secondary"
-          size={"lg"}
+          size="lg"
           className="w-full"
         >
-          Login with Github
+          login with github
           <FaGithub className="mr-2 size-5" />
         </Button>
-      </CardContent>
-
-      <div className="px-7">
-        <DottedSeparator />
-      </div>
-      <CardContent className="p-7 flex items-center justify-center">
-        <p>
-          Already have an account?
-          <Link href={"/sign-in"}>
-            <span className="text-blue-700">&nbsp;sign-in</span>
-          </Link>
-        </p>
       </CardContent>
     </Card>
   );
 };
-
-export default SignUpCard;

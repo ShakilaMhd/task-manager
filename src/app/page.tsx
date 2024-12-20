@@ -1,3 +1,12 @@
+
+import { createAdminClient } from "@/lib/appwrite";
+
 export default async function Home() {
-  return <><h1>world</h1></>;
+  console.log(createAdminClient, "hello");
+
+  return (
+    <>
+      <h1>سلام دکتر only visibke</h1>
+    </>
+  );
 }

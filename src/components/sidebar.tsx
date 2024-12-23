@@ -9,8 +9,10 @@ export const Sidebar = () => {
       <Link href="/">
         <Image src="./logo1.svg" alt="logo" width={50} height={48}></Image>
       </Link>
-          <DottedSeparator />
-          <Navigation />
+      <div className="my-5">
+        <DottedSeparator />
+      </div>
+      <Navigation />
     </aside>
   );
 };

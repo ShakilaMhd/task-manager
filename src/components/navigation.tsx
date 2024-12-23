@@ -8,6 +8,7 @@ import {
   GoHomeFill,
 } from "react-icons/go";
 
+
 const routes = [
   {
     label: "خانه",
@@ -35,6 +36,7 @@ const routes = [
     activIcon: UsersIcon,
   },
 ];
+
 
 export const Navigation = () => {
   return (

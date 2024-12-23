@@ -1,4 +1,5 @@
 import { UserButton } from "@/features/auth/components/user-button";
+import MobileSidebar from "./mobile-sidebar";
 
 const Navbar = () => {
   return (
@@ -7,6 +8,7 @@ const Navbar = () => {
         <h1 className="text-2xl font-semibold">خانه</h1>
         <p className="text-muted-foreground">تمامی پروژه ها و تسک های خود را ببینید</p>
           </div>
+          <MobileSidebar />
           <UserButton />
     </nav>
   );

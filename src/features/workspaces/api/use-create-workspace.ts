@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 
@@ -13,11 +15,21 @@ export const useCreateWorkspace = () => {
     const mutation = useMutation<ResponseType, Error, RequestType>({
         mutationFn: async ({ json }) => {
             const response = await client.api.workspaces["$post"]({ json })
+
+
+            if (!response.ok) {
+                throw new Error("فضای کاری ساخته نشد😐 ")
+            }
+
             return await response.json()
         },
         onSuccess: () => {
+            toast.success("فضای کاری ساخته شد🙂")
             queryClient.invalidateQueries({ queryKey: ["workspaces"] })
 
+        },
+        onError: () => {
+            toast.error("فضای کاری ساخته نشد😐")
         }
     })
     return mutation

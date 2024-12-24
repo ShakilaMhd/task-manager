@@ -1,5 +1,3 @@
-
-
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
 // import { Inter } from "next/font/google";
@@ -8,6 +6,7 @@ import { Vazirmatn } from "next/font/google";
 import { QueryProvider } from "@/components/query-provider";
 
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const vazirmatn = Vazirmatn({
   subsets: ["latin", "arabic"],
@@ -38,12 +37,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html  lang="fa" dir="rtl" className={vazirmatn.className}>
+    <html lang="fa" dir="rtl" className={vazirmatn.className}>
       <body
-        // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        // className={cn(inter.className, "antialiased min-h-screen")}
+      // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      // className={cn(inter.className, "antialiased min-h-screen")}
       >
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <Toaster />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

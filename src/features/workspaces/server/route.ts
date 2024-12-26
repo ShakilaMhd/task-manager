@@ -5,7 +5,7 @@ import { ID } from "node-appwrite"
 import { createWorkspaceSchema } from "../schemas"
 
 import { sessionMiddleware } from "@/lib/session-middlware"
-import { DATABASE_ID, IMAGES_BUCKET_ID, WORKSPACES_ID } from "@/config"
+import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACES_ID } from "@/config"
 
 const app = new Hono()
     // => /,/workspaces
@@ -15,9 +15,9 @@ const app = new Hono()
         const workspaces = await databases.listDocuments(
             DATABASE_ID,
             WORKSPACES_ID
-        ) 
+        )
 
-        return c.json({data: workspaces})
+        return c.json({ data: workspaces })
     })
 
 
@@ -55,6 +55,19 @@ const app = new Hono()
                 ID.unique(),
                 { name: name, userId: user.$id, imageUrl: uploadedImagesUrl }
             )
+
+            await databases.createDocument(
+                DATABASE_ID,
+                MEMBERS_ID,
+                ID.unique(),
+                {
+                    userId: user.$id,
+                    workspaceId: workspace.$id,
+                    role: "ADMIN"
+                }
+            )
+
+
             return c.json({ data: workspace })
 
         }

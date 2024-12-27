@@ -21,7 +21,7 @@ const app = new Hono()
             DATABASE_ID,
             MEMBERS_ID,
             [Query.equal("userId", user.$id)]
-        )
+        );
 
         if (members.total === 0) {
             return c.json({ data: { documents: [], total: 0 } })

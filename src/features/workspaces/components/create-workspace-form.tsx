@@ -23,12 +23,15 @@ import { Button } from "@/components/ui/button";
 import { useCreateWorkspace } from "../api/use-create-workspace";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
 }
 
 export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+  const router = useRouter()
   const { mutate, isPending } = useCreateWorkspace();
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -47,9 +50,10 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
     mutate(
       { form: finalValues },
       {
-        onSuccess: () => {
-              form.reset();
-              //todo: redirect to new workspace
+        onSuccess: ({data}) => {
+          form.reset();
+          // onCancel?.()
+          router.push(`/workspaces/${data.$id}`)
         },
       }
     );
@@ -162,6 +166,7 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 variant="secondary"
                 onClick={onCancel}
                 disabled={isPending}
+                className={cn(!onCancel && "invisible")}
               >
                 لغو
               </Button>

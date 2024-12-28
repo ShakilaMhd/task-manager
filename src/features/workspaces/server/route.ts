@@ -2,11 +2,13 @@ import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { ID, Query } from "node-appwrite"
 
-import { createWorkspaceSchema } from "../schemas"
+import { createWorkspaceSchema, updateWorkspaceSchema } from "../schemas"
+import { generateInviteCode } from "@/lib/utils"
 
 import { sessionMiddleware } from "@/lib/session-middlware"
 import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACES_ID } from "@/config"
 import { MemberRole } from "@/features/members/types"
+import { getMember } from "@/features/members/utils"
 
 const app = new Hono()
     // => /,/workspaces
@@ -20,7 +22,7 @@ const app = new Hono()
             DATABASE_ID,
             MEMBERS_ID,
             [Query.equal("userId", user.$id)]
-        )
+        );
 
         if (members.total === 0) {
             return c.json({ data: { documents: [], total: 0 } })
@@ -33,7 +35,7 @@ const app = new Hono()
             WORKSPACES_ID,
             [
                 Query.orderDesc("$createdAt"),
-                Query.contains("$id",workspaceIds)
+                Query.contains("$id", workspaceIds)
             ]
         )
 
@@ -73,7 +75,12 @@ const app = new Hono()
                 DATABASE_ID,
                 WORKSPACES_ID,
                 ID.unique(),
-                { name: name, userId: user.$id, imageUrl: uploadedImagesUrl }
+                {
+                    name: name,
+                    userId: user.$id,
+                    imageUrl: uploadedImagesUrl,
+                    inviteCode: generateInviteCode(6)
+                }
             )
 
             await databases.createDocument(
@@ -93,4 +100,55 @@ const app = new Hono()
         }
     )
 
+
+    .patch("/:workspaceId", sessionMiddleware, zValidator("form", updateWorkspaceSchema), async (c) => {
+        const databases = c.get("databases")
+        const storage = c.get("storage")
+        const user = c.get("user")
+
+        const { workspaceId } = c.req.param()
+        const { name, image } = c.req.valid("form")
+
+        const member = await getMember({
+            databases,
+            workspaceId,
+            userId: user.$id
+        })
+
+        if (!member || member.role !== MemberRole.ADMIN) {
+            return c.json({ error: "Unauthorized" }, 401)
+        }
+
+        let uploadedImagesUrl: string | undefined
+
+        if (image instanceof File) {
+            const file = await storage.createFile(
+                IMAGES_BUCKET_ID,
+                ID.unique(),
+                image
+            )
+
+            const arrayBuffer = await storage.getFilePreview(
+                IMAGES_BUCKET_ID,
+                file.$id
+            )
+
+
+            uploadedImagesUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`
+        } else {
+            uploadedImagesUrl = image
+        }
+
+        const workspace = await databases.updateDocument(
+            DATABASE_ID,
+            WORKSPACES_ID,
+            workspaceId,
+            {
+                name,
+                imageUrl: uploadedImagesUrl
+            }
+        )
+
+        return c.json({ data: workspace })
+    })
 export default app

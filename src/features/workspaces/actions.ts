@@ -76,7 +76,9 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => {
             userId: user.$id
         })
 
-        if(!member) return null
+        if (!member) {
+            return null
+        }
 
         const workspace = await databases.getDocument<Workspace>(
             DATABASE_ID,

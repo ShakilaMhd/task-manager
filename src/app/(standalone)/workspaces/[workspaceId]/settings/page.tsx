@@ -23,7 +23,11 @@ const WorkspaceIdSettingsPage = async ({
     redirect(`/workspaces/${params.workspaceId}`);
   }
 
-  return <EditWorkSpaceForm initialValues={initialValues}/>
+  return (
+    <div className="w-full lg:max-w-xl">
+      <EditWorkSpaceForm initialValues={initialValues} />
+    </div>
+  );
 };
 
 export default WorkspaceIdSettingsPage;

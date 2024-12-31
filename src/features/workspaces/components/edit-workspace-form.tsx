@@ -21,13 +21,14 @@ import { updateWorkspaceSchema } from "../schemas";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeftIcon, ImageIcon } from "lucide-react";
+import { ArrowLeftIcon, CopyIcon, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Workspace } from "../types";
 import { useUpdateWorkspace } from "../api/use-update-workspace";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useDeleteWorkspace } from "../api/use-delete-workspace";
+import { toast } from "sonner";
 
 interface EditWorkSpaceFormProps {
   onCancel?: () => void;
@@ -98,6 +99,13 @@ export const EditWorkSpaceForm = ({
       form.setValue("image", file);
     }
   };
+
+  const handleCopyInviteCode = () => {
+    navigator.clipboard.writeText(fullInviteLink)
+    .then(() => toast.success("😊در کلیپبورد کپی شد"))
+  }
+
+  const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`;
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -239,6 +247,35 @@ export const EditWorkSpaceForm = ({
               </div>
             </form>
           </Form>
+        </CardContent>
+      </Card>
+
+      <Card className="w-full h-full border-none shadow-none">
+        <CardContent className="p-7">
+          <div className="flex flex-col">
+            <h3 className="font-bold items-end">دعوت دوستان</h3>
+            <p className="text-sm text-muted-foreground">
+              دعوت دوستان به فضای کاری با استفاده از کد دعوت
+            </p>
+            <div className="mt-4">
+              <div className="flex items-center gap-x-2">
+                <Input disabled value={fullInviteLink} />
+                <Button onClick={handleCopyInviteCode} aria-label="کپی شد" variant="secondary" className="size-12"><CopyIcon /></Button>
+              </div>
+            </div>
+            <div className="">
+              <Button
+                className="mt-6 w-fit ml-auto"
+                size="sm"
+                variant="destructive"
+                type="button"
+                disabled={isPending || isDeletingWorkspace}
+                onClick={handleDelete}
+              >
+                حذف
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

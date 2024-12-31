@@ -100,10 +100,12 @@ export const EditWorkSpaceForm = ({
     }
   };
 
-  const handleCopyInviteCode = () => {
-    navigator.clipboard.writeText(fullInviteLink)
-    .then(() => toast.success("😊در کلیپبورد کپی شد"))
-  }
+  const handleCopyInviteLink = () => {
+    navigator.clipboard
+      .writeText(fullInviteLink)
+      .then(() => toast.success("😊در کلیپبورد کپی شد"));
+  };
+
 
   const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`;
 
@@ -260,10 +262,19 @@ export const EditWorkSpaceForm = ({
             <div className="mt-4">
               <div className="flex items-center gap-x-2">
                 <Input disabled value={fullInviteLink} />
-                <Button onClick={handleCopyInviteCode} aria-label="کپی شد" variant="secondary" className="size-12"><CopyIcon /></Button>
+                <Button
+                  onClick={handleCopyInviteLink}
+                  variant="secondary"
+                  className="size-12"
+                >
+                  <CopyIcon className="size-5" />
+                </Button>
               </div>
             </div>
-            <div className="">
+            <div className="py-7">
+              <DottedSeparator />
+            </div>
+            <div className="flex items-center justify-between">
               <Button
                 className="mt-6 w-fit ml-auto"
                 size="sm"
@@ -272,7 +283,7 @@ export const EditWorkSpaceForm = ({
                 disabled={isPending || isDeletingWorkspace}
                 onClick={handleDelete}
               >
-                حذف
+                بازنشانی کد دعوت{" "}
               </Button>
             </div>
           </div>
@@ -287,7 +298,8 @@ export const EditWorkSpaceForm = ({
               حذف یک فضای کاری برگشت ناپذیر است و تمام داده های مرتبط را حذف می
               کند
             </p>
-            <div className="">
+          
+            <div>
               <Button
                 className="mt-6 w-fit ml-auto"
                 size="sm"

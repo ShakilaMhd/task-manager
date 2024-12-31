@@ -20,13 +20,14 @@ import {
 import { updateWorkspaceSchema } from "../schemas";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useCreateWorkspace } from "../api/use-create-workspace";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeftIcon, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Workspace } from "../types";
 import { useUpdateWorkspace } from "../api/use-update-workspace";
+import { useConfirm } from "@/hooks/use-confirm";
+import { useDeleteWorkspace } from "../api/use-delete-workspace";
 
 interface EditWorkSpaceFormProps {
   onCancel?: () => void;
@@ -39,6 +40,14 @@ export const EditWorkSpaceForm = ({
 }: EditWorkSpaceFormProps) => {
   const router = useRouter();
   const { mutate, isPending } = useUpdateWorkspace();
+  const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
+    useDeleteWorkspace();
+
+  const [DeleteDialog, confirmDelete] = useConfirm(
+    "حذف فضای کاری",
+    "این عمل قابل برگشت نیست",
+    "destructive"
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,6 +55,24 @@ export const EditWorkSpaceForm = ({
     resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: { ...initialValues, image: initialValues.imageUrl ?? "" },
   });
+
+  const handleDelete = async () => {
+    const ok = await confirmDelete();
+
+    if (!ok) return;
+
+    // console.log("deleting...");
+    deleteWorkspace(
+      {
+        param: { workspaceId: initialValues.$id },
+      },
+      {
+        onSuccess: () => {
+          router.push("/");
+        },
+      }
+    );
+  };
 
   const onSubmit = (values: z.infer<typeof updateWorkspaceSchema>) => {
     // console.log({ values });
@@ -74,6 +101,7 @@ export const EditWorkSpaceForm = ({
 
   return (
     <div className="flex flex-col gap-y-4">
+      <DeleteDialog />
       <Card className="w-full h-full border-none shadow-none">
         <CardHeader className="flex flex-row justify-between items-center p-7  space-y-0">
           <CardTitle className="text-xl font-bold">
@@ -228,8 +256,8 @@ export const EditWorkSpaceForm = ({
                 size="sm"
                 variant="destructive"
                 type="button"
-                disabled={isPending}
-                onClick={() => {}}
+                disabled={isPending || isDeletingWorkspace}
+                onClick={handleDelete}
               >
                 حذف
               </Button>

@@ -29,6 +29,7 @@ import { useUpdateWorkspace } from "../api/use-update-workspace";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useDeleteWorkspace } from "../api/use-delete-workspace";
 import { toast } from "sonner";
+import { useResetInviteCode } from "../api/use-reset-invite-code";
 
 interface EditWorkSpaceFormProps {
   onCancel?: () => void;
@@ -44,9 +45,18 @@ export const EditWorkSpaceForm = ({
   const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
     useDeleteWorkspace();
 
+  const { mutate: resetInviteCode, isPending: isResetingInviteCode } =
+    useResetInviteCode();
+
   const [DeleteDialog, confirmDelete] = useConfirm(
     "حذف فضای کاری",
     "این عمل قابل برگشت نیست",
+    "destructive"
+  );
+
+  const [ResetDialog, confirmReset] = useConfirm(
+    "بازنشانی لینک دعوت",
+    "این پیوند دعوت را باطل می کند",
     "destructive"
   );
 
@@ -56,6 +66,25 @@ export const EditWorkSpaceForm = ({
     resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: { ...initialValues, image: initialValues.imageUrl ?? "" },
   });
+
+  const handleResetInviteCode = async () => {
+    const ok = await confirmReset();
+
+    if (!ok) return;
+
+    // console.log("deleting...");
+    resetInviteCode(
+      {
+        param: { workspaceId: initialValues.$id },
+      },
+      {
+        onSuccess: () => {
+          //refetch server compo
+          router.refresh()
+        },
+      }
+    );
+  };
 
   const handleDelete = async () => {
     const ok = await confirmDelete();
@@ -106,12 +135,12 @@ export const EditWorkSpaceForm = ({
       .then(() => toast.success("😊در کلیپبورد کپی شد"));
   };
 
-
   const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`;
 
   return (
     <div className="flex flex-col gap-y-4">
       <DeleteDialog />
+      <ResetDialog />
       <Card className="w-full h-full border-none shadow-none">
         <CardHeader className="flex flex-row justify-between items-center p-7  space-y-0">
           <CardTitle className="text-xl font-bold">
@@ -280,8 +309,8 @@ export const EditWorkSpaceForm = ({
                 size="sm"
                 variant="destructive"
                 type="button"
-                disabled={isPending || isDeletingWorkspace}
-                onClick={handleDelete}
+                disabled={isPending || isResetingInviteCode}
+                onClick={handleResetInviteCode}
               >
                 بازنشانی کد دعوت{" "}
               </Button>
@@ -298,7 +327,7 @@ export const EditWorkSpaceForm = ({
               حذف یک فضای کاری برگشت ناپذیر است و تمام داده های مرتبط را حذف می
               کند
             </p>
-          
+
             <div>
               <Button
                 className="mt-6 w-fit ml-auto"

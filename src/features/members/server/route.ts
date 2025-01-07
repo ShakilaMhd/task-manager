@@ -91,11 +91,11 @@ const app = new Hono()
                 return c.json({ error: "Unauthorized" }, 401)
             }
 
-            if (allMembersInWorkspace.total !== 1) {
+            if (allMembersInWorkspace.total === 1) {
                 return c.json({ error: "Can not delete the only member" }, 400)
 
             }
-
+ 
             await databases.deleteDocument(
                 DATABASE_ID,
                 MEMBERS_ID,
@@ -142,7 +142,7 @@ const app = new Hono()
                 return c.json({ error: "Unauthorized" }, 401)
             }
 
-            if (allMembersInWorkspace.total !== 1) {
+            if (allMembersInWorkspace.total === 1) {
                 return c.json({ error: "Can not downgrade the only member" }, 400)
 
             }

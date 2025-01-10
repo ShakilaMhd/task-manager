@@ -73,17 +73,9 @@ export const EditWorkSpaceForm = ({
     if (!ok) return;
 
     // console.log("deleting...");
-    resetInviteCode(
-      {
-        param: { workspaceId: initialValues.$id },
-      },
-      {
-        onSuccess: () => {
-          //refetch server compo
-          router.refresh()
-        },
-      }
-    );
+    resetInviteCode({
+      param: { workspaceId: initialValues.$id },
+    });
   };
 
   const handleDelete = async () => {
@@ -113,10 +105,10 @@ export const EditWorkSpaceForm = ({
     mutate(
       { form: finalValues, param: { workspaceId: initialValues.$id } },
       {
-        onSuccess: ({ data }) => {
+        onSuccess: () => {
           form.reset();
           // onCancel?.()
-          router.push(`/workspaces/${data.$id}`);
+          // router.push(`/workspaces/${data.$id}`);
         },
       }
     );

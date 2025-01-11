@@ -29,12 +29,11 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { Project } from "../types";
 import { updateProjectSchema } from "../schemas";
 import { useUpdateProject } from "../api/use-update-project";
-
-
+import { useDeleteProject } from "../api/use-delete-project";
 
 interface EditProjectFormProps {
   onCancel?: () => void;
-  initialValues: Project ;
+  initialValues: Project;
 }
 
 export const EditProjectForm = ({
@@ -43,15 +42,14 @@ export const EditProjectForm = ({
 }: EditProjectFormProps) => {
   const router = useRouter();
   const { mutate, isPending } = useUpdateProject();
-  // const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
-  //   useDeleteWorkspace();
+  const { mutate: deleteProject, isPending: isDeletingProject } =
+    useDeleteProject();
 
   const [DeleteDialog, confirmDelete] = useConfirm(
-    "حذف فضای کاری",
+    "حذف پروژه",
     "این عمل قابل برگشت نیست",
     "destructive"
   );
-
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -60,24 +58,25 @@ export const EditProjectForm = ({
     defaultValues: { ...initialValues, image: initialValues.imageUrl ?? "" },
   });
 
-  
-
   const handleDelete = async () => {
     const ok = await confirmDelete();
 
     if (!ok) return;
 
-    // console.log("deleting...");
-  //   deleteWorkspace(
-  //     {
-  //       param: { workspaceId: initialValues.$id },
-  //     },
-  //     {
-  //       onSuccess: () => {
-  //         router.push("/");
-  //       },
-  //     }
-  //   );
+    deleteProject(
+      {
+        param: { projectId: initialValues.$id },
+      },
+      {
+        onSuccess: () => {
+          router.push(`/workspaces/${initialValues.workspaceId}`)
+          // router.push("/");
+          // window.location.href = "/"
+          // console.log({"initials ma": initialValues.workspaceId})
+          // window.location.href = `/workspaces/${initialValues.workspaceId}`;
+        },
+      }
+    );
   };
 
   const onSubmit = (values: z.infer<typeof updateProjectSchema>) => {
@@ -106,7 +105,6 @@ export const EditProjectForm = ({
     }
   };
 
-
   return (
     <div className="flex flex-col gap-y-4">
       <DeleteDialog />
@@ -122,7 +120,10 @@ export const EditProjectForm = ({
             onClick={
               onCancel
                 ? onCancel
-                : () => router.push(`/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`)
+                : () =>
+                    router.push(
+                      `/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`
+                    )
             }
           >
             برگشت
@@ -255,8 +256,7 @@ export const EditProjectForm = ({
           <div className="flex flex-col">
             <h3 className="font-bold items-end">danger zone</h3>
             <p className="text-sm text-muted-foreground">
-              حذف یک پروژه برگشت ناپذیر است و تمام داده های مرتبط را حذف می
-              کند
+              حذف یک پروژه برگشت ناپذیر است و تمام داده های مرتبط را حذف می کند
             </p>
 
             <div>

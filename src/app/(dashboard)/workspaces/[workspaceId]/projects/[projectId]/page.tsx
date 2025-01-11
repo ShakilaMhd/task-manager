@@ -18,6 +18,7 @@ const ProjectIdPage = async ({ params }: ProjectIdPageProps) => {
     projectId: params.projectId,
   });
 
+
   if (!initialValues) {
     throw new Error("project not found");
   }
@@ -36,7 +37,7 @@ const ProjectIdPage = async ({ params }: ProjectIdPageProps) => {
         <div>
           <Button variant="secondary" size="sm" asChild>
             <Link
-              href={`/workspaces/${initialValues.workspacesId}/projects/${initialValues.$id}/settings`}
+              href={`/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}/settings`}
             >
               <PencilIcon className="size-4 mr-2"/>
               ویرایش پروژه

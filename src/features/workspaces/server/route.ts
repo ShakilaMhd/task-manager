@@ -103,7 +103,11 @@ const app = new Hono()
     )
 
 
-    .patch("/:workspaceId", sessionMiddleware, zValidator("form", updateWorkspaceSchema), async (c) => {
+    .patch(
+        "/:workspaceId", 
+        sessionMiddleware, 
+        zValidator("form", updateWorkspaceSchema), 
+        async (c) => {
         const databases = c.get("databases")
         const storage = c.get("storage")
         const user = c.get("user")

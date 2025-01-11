@@ -16,94 +16,77 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import { updateWorkspaceSchema } from "../schemas";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeftIcon, CopyIcon, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Workspace } from "../types";
-import { useUpdateWorkspace } from "../api/use-update-workspace";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useDeleteWorkspace } from "../api/use-delete-workspace";
 import { toast } from "sonner";
-import { useResetInviteCode } from "../api/use-reset-invite-code";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-interface EditWorkSpaceFormProps {
+import { useConfirm } from "@/hooks/use-confirm";
+
+import { Project } from "../types";
+import { updateProjectSchema } from "../schemas";
+import { useUpdateProject } from "../api/use-update-project";
+import { useDeleteProject } from "../api/use-delete-project";
+
+interface EditProjectFormProps {
   onCancel?: () => void;
-  initialValues: Workspace;
+  initialValues: Project;
 }
 
-export const EditWorkSpaceForm = ({
+export const EditProjectForm = ({
   onCancel,
   initialValues,
-}: EditWorkSpaceFormProps) => {
+}: EditProjectFormProps) => {
   const router = useRouter();
-  const { mutate, isPending } = useUpdateWorkspace();
-  const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
-    useDeleteWorkspace();
-
-  const { mutate: resetInviteCode, isPending: isResetingInviteCode } =
-    useResetInviteCode();
+  const { mutate, isPending } = useUpdateProject();
+  const { mutate: deleteProject, isPending: isDeletingProject } =
+    useDeleteProject();
 
   const [DeleteDialog, confirmDelete] = useConfirm(
-    "حذف فضای کاری",
+    "حذف پروژه",
     "این عمل قابل برگشت نیست",
-    "destructive"
-  );
-
-  const [ResetDialog, confirmReset] = useConfirm(
-    "بازنشانی لینک دعوت",
-    "این پیوند دعوت را باطل می کند",
     "destructive"
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
-    resolver: zodResolver(updateWorkspaceSchema),
+  const form = useForm<z.infer<typeof updateProjectSchema>>({
+    resolver: zodResolver(updateProjectSchema),
     defaultValues: { ...initialValues, image: initialValues.imageUrl ?? "" },
   });
-
-  const handleResetInviteCode = async () => {
-    const ok = await confirmReset();
-
-    if (!ok) return;
-
-    // console.log("deleting...");
-    resetInviteCode({
-      param: { workspaceId: initialValues.$id },
-    });
-  };
 
   const handleDelete = async () => {
     const ok = await confirmDelete();
 
     if (!ok) return;
 
-    // console.log("deleting...");
-    deleteWorkspace(
+    deleteProject(
       {
-        param: { workspaceId: initialValues.$id },
+        param: { projectId: initialValues.$id },
       },
       {
         onSuccess: () => {
-          router.push("/");
+          router.push(`/workspaces/${initialValues.workspaceId}`)
+          // router.push("/");
+          // window.location.href = "/"
+          // console.log({"initials ma": initialValues.workspaceId})
+          // window.location.href = `/workspaces/${initialValues.workspaceId}`;
         },
       }
     );
   };
 
-  const onSubmit = (values: z.infer<typeof updateWorkspaceSchema>) => {
+  const onSubmit = (values: z.infer<typeof updateProjectSchema>) => {
     // console.log({ values });
     const finalValues = {
       ...values,
       iamge: values.image instanceof File ? values.image : "",
     };
     mutate(
-      { form: finalValues, param: { workspaceId: initialValues.$id } },
+      { form: finalValues, param: { projectId: initialValues.$id } },
       {
         onSuccess: () => {
           form.reset();
@@ -122,18 +105,9 @@ export const EditWorkSpaceForm = ({
     }
   };
 
-  const handleCopyInviteLink = () => {
-    navigator.clipboard
-      .writeText(fullInviteLink)
-      .then(() => toast.success("😊در کلیپبورد کپی شد"));
-  };
-
-  const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`;
-
   return (
     <div className="flex flex-col gap-y-4">
       <DeleteDialog />
-      <ResetDialog />
       <Card className="w-full h-full border-none shadow-none">
         <CardHeader className="flex flex-row justify-between items-center p-7  space-y-0">
           <CardTitle className="text-xl font-bold">
@@ -146,7 +120,10 @@ export const EditWorkSpaceForm = ({
             onClick={
               onCancel
                 ? onCancel
-                : () => router.push(`/workspaces/${initialValues.$id}`)
+                : () =>
+                    router.push(
+                      `/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`
+                    )
             }
           >
             برگشت
@@ -165,9 +142,9 @@ export const EditWorkSpaceForm = ({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>نام فضای کاری</FormLabel>
+                      <FormLabel>نام پروژه</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="نام فضای کاری" />
+                        <Input {...field} placeholder="نام پروژه" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -200,7 +177,7 @@ export const EditWorkSpaceForm = ({
                           </Avatar>
                         )}
                         <div className="flex flex-col">
-                          <p className="text-sm">آیکون فضای کاری</p>
+                          <p className="text-sm">آیکون پروژه</p>
                           <p className="text-sm text-muted-foreground">
                             JPEG,JPG,SVG,PNG max 1mb
                           </p>
@@ -277,48 +254,9 @@ export const EditWorkSpaceForm = ({
       <Card className="w-full h-full border-none shadow-none">
         <CardContent className="p-7">
           <div className="flex flex-col">
-            <h3 className="font-bold items-end">دعوت دوستان</h3>
-            <p className="text-sm text-muted-foreground">
-              دعوت دوستان به فضای کاری با استفاده از کد دعوت
-            </p>
-            <div className="mt-4">
-              <div className="flex items-center gap-x-2">
-                <Input disabled value={fullInviteLink} />
-                <Button
-                  onClick={handleCopyInviteLink}
-                  variant="secondary"
-                  className="size-12"
-                >
-                  <CopyIcon className="size-5" />
-                </Button>
-              </div>
-            </div>
-            <div className="py-7">
-              <DottedSeparator />
-            </div>
-            <div className="flex items-center justify-between">
-              <Button
-                className="mt-6 w-fit ml-auto"
-                size="sm"
-                variant="destructive"
-                type="button"
-                disabled={isPending || isResetingInviteCode}
-                onClick={handleResetInviteCode}
-              >
-                بازنشانی کد دعوت{" "}
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="w-full h-full border-none shadow-none">
-        <CardContent className="p-7">
-          <div className="flex flex-col">
             <h3 className="font-bold items-end">danger zone</h3>
             <p className="text-sm text-muted-foreground">
-              حذف یک فضای کاری برگشت ناپذیر است و تمام داده های مرتبط را حذف می
-              کند
+              حذف یک پروژه برگشت ناپذیر است و تمام داده های مرتبط را حذف می کند
             </p>
 
             <div>
@@ -327,10 +265,10 @@ export const EditWorkSpaceForm = ({
                 size="sm"
                 variant="destructive"
                 type="button"
-                disabled={isPending || isDeletingWorkspace}
+                disabled={isPending}
                 onClick={handleDelete}
               >
-                حذف
+                حذف پروژه
               </Button>
             </div>
           </div>

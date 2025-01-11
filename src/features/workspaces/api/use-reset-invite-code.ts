@@ -4,12 +4,14 @@ import { dataTagSymbol, useMutation, useQueryClient } from "@tanstack/react-quer
 import { InferRequestType, InferResponseType } from "hono";
 
 import { client } from "@/lib/rpc"
+import { useRouter } from "next/navigation";
 
 
 type ResponseType = InferResponseType<typeof client.api.workspaces[":workspaceId"]["reset-invite-code"]["$post"], 200>
 type RequestType = InferRequestType<typeof client.api.workspaces[":workspaceId"]["reset-invite-code"]["$post"]>
 
 export const useResetInviteCode = () => {
+    const router = useRouter()
     const queryClient = useQueryClient()
 
     const mutation = useMutation<ResponseType, Error, RequestType>({
@@ -25,6 +27,7 @@ export const useResetInviteCode = () => {
         },
         onSuccess: ({ data }) => {
             toast.success("کد دعوت بازنشانی شد")
+            router.refresh()
             queryClient.invalidateQueries({ queryKey: ["workspaces"] })
             queryClient.invalidateQueries({ queryKey: ["workspaces", data.$id] })
 

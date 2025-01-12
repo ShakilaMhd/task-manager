@@ -11,8 +11,11 @@ import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 import { useGetTasks } from "../api/use-get-tasks";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { DataFilters } from "./data-filters";
+import { useTaskFilters } from "../hooks/use-tasks-filters";
 
 export const TaskViewSwitcher = () => {
+  const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
+
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
@@ -22,6 +25,10 @@ export const TaskViewSwitcher = () => {
 
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
     workspaceId,
+    projectId,
+    assigneeId,
+    dueDate,
+    status,
   });
 
   return (
@@ -59,7 +66,7 @@ export const TaskViewSwitcher = () => {
         </div>
         {isLoadingTasks ? (
           <div className="w-full border rounded-lg h-[200px] flex flex-col items-center justify-center ">
-            <Loader className="size-5 animate-spin text-muted-foreground"/>
+            <Loader className="size-5 animate-spin text-muted-foreground" />
           </div>
         ) : (
           <>

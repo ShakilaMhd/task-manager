@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 import { useGetTasks } from "../api/use-get-tasks";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { DataFilters } from "./data-filters";
 
 export const TaskViewSwitcher = () => {
   const [view, setView] = useQueryState("task-view", {
@@ -52,7 +53,7 @@ export const TaskViewSwitcher = () => {
           <DottedSeparator className="my-4" />
         </div>
         {/* add filter */}
-        <div>فیلتر داده ها</div>
+        <DataFilters />
         <div className="my-4">
           <DottedSeparator className="my-4" />
         </div>

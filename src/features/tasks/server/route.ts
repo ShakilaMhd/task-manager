@@ -139,11 +139,12 @@ const app = new Hono()
         workspaceId,
         userId: user.$id,
       });
+      // console.log({"shoma member nistid": member})
 
       if (!member) {
         return c.json({ error: "Unauthorized" }, 401);
       }
-
+      
       const highestPositionTask = await databases.listDocuments(
         DATABASE_ID,
         TASKS_ID,
@@ -154,7 +155,7 @@ const app = new Hono()
           Query.limit(1),
         ]
       );
-
+      
       const newPosition =
         highestPositionTask.documents.length > 0
           ? highestPositionTask.documents[0].position + 1000

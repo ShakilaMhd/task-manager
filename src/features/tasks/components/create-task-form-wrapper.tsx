@@ -46,6 +46,10 @@ export const CreateTaskFormWrapper = ({
   }
 
   return (
+    // <div>
+    //   {JSON.stringify(projectOptions)}
+    //   {JSON.stringify(memberOptions)}
+    //  </div>
     <CreateTaskForm
       onCancel={onCancel}
       projectOptions={projectOptions ?? []}

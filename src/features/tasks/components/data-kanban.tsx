@@ -9,6 +9,7 @@ import {
 
 import { Task, TaskStatus } from "../types";
 import { KanbanColumnHeader } from "./kanban-column-header";
+import { KanbanCard } from "./kanban-card";
 
 const boards: TaskStatus[] = [
   TaskStatus.BACKLOG,

@@ -67,8 +67,8 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
       </div> */}
-      <div className="rounded-md border">
-        <Table>
+      <div className="rounded-md border items-center">
+        <Table >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -108,7 +108,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center items-center"
                 >
                   No results.
                 </TableCell>

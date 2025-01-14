@@ -58,7 +58,38 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
               key={board}
               className="flex-1 mx-2 bg-muted p-1.5 rounded-md min-w-[180px]"
             >
-              <KanbanColumnHeader board={board} taskCount={tasks[board].length}/>
+              <KanbanColumnHeader
+                board={board}
+                taskCount={tasks[board].length}
+              />
+              <Droppable droppableId={board}>
+                {(provided) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="min-h-[200px] py-1.5"
+                  >
+                    {tasks[board].map((task, index) => (
+                      <Draggable
+                        key={task.$id}
+                        draggableId={task.$id}
+                        index={index}
+                      >
+                        {(provided => (
+                            <div 
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            >
+                                {/* {task.name} */}
+                                <KanbanCard task={task}/>
+                            </div>
+                        ))}
+                      </Draggable>
+                    ))}
+                  </div>
+                )}
+              </Droppable>
             </div>
           );
         })}

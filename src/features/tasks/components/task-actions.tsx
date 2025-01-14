@@ -8,6 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteTask } from "../api/use-delete-task";
+import { useRouter } from "next/navigation";
+import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 
 interface TaskActionsProps {
   id: string;
@@ -16,6 +18,9 @@ interface TaskActionsProps {
 }
 
 export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
+  const workspaceId = useWorkspaceId();
+  const router = useRouter();
+
   const [ConfirmDialog, confirm] = useConfirm(
     "حذف تسک",
     "این عمل قابل برگشت نیست",
@@ -31,6 +36,14 @@ export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
     mutate({ param: { taskId: id } });
   };
 
+  const onOpenTask = () => {
+    router.push(`/workspaces/${workspaceId}/tasks/${id}`);
+  };
+
+  const onOpenProject = () => {
+    router.push(`/workspaces/${workspaceId}/projects/${projectId}`);
+  };
+
   return (
     <div className="flex justify-end">
       <ConfirmDialog />
@@ -40,11 +53,11 @@ export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
           align="end"
           className="w-40 flex flex-col items-center p-[5px]"
         >
-          <DropdownMenuItem onClick={() => {}} className="font-medium ">
+          <DropdownMenuItem onClick={onOpenTask} className="font-medium ">
             جزئیات تسک
             <ExternalLinkIcon className="size-4 mr-2 stroke-2" />
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => {}} className="font-medium ">
+          <DropdownMenuItem onClick={onOpenProject} className="font-medium ">
             بازکردن پروژه
             <ExternalLinkIcon className="size-4 mr-2 stroke-2" />
           </DropdownMenuItem>

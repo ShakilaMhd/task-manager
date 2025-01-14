@@ -56,7 +56,7 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
           return (
             <div
               key={board}
-              className="flex-1 mx-2 bg-muted p-1.5 rounded-md min-w-[200px]"
+              className="flex-1 mx-2 bg-muted p-1.5 rounded-md min-w-[180px]"
             >
               <KanbanColumnHeader board={board} taskCount={tasks[board].length}/>
             </div>

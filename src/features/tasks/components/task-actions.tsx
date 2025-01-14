@@ -10,6 +10,7 @@ import {
 import { useDeleteTask } from "../api/use-delete-task";
 import { useRouter } from "next/navigation";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { useEditTaskModal } from "../hooks/use-edit-task-modal copy";
 
 interface TaskActionsProps {
   id: string;
@@ -20,6 +21,8 @@ interface TaskActionsProps {
 export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
   const workspaceId = useWorkspaceId();
   const router = useRouter();
+
+const {open} = useEditTaskModal()
 
   const [ConfirmDialog, confirm] = useConfirm(
     "حذف تسک",
@@ -61,7 +64,7 @@ export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
             بازکردن پروژه
             <ExternalLinkIcon className="size-4 mr-2 stroke-2" />
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => {}} className="font-medium ">
+          <DropdownMenuItem onClick={() => open(id)} className="font-medium ">
             ویرایش تسک
             <PencilIcon className="size-4 mr-2 stroke-2" />
           </DropdownMenuItem>

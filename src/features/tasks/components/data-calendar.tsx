@@ -13,8 +13,9 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 
 import { Task } from "../types";
 
-import "react-big-calendar/lib/css/react-big-calendar.css"
-import "./data-calendar.css"
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import "./data-calendar.css";
+import { EventCard } from "./event-card";
 
 const locales = {
   "fa-IR": faIR,
@@ -72,7 +73,17 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
         weekdayFormat: (date, culture, localizer) =>
           localizer?.format(date, "EEE", culture) ?? "",
       }}
-        
+      components={{
+        eventWrapper: ({ event }) => (
+          <EventCard
+            id={event.id}
+            title={event.title}
+            assignee={event.assignee}
+            project={event.project}
+            status={event.status}
+          />
+        ),
+      }}
     />
   );
 };

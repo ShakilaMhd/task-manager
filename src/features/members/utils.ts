@@ -4,7 +4,7 @@ import { DATABASE_ID, MEMBERS_ID } from "@/config";
 
 interface GetMemberProps {
     databases: Databases
-    workspaceId: string
+    workspaceId: string 
     userId: string
 }
 

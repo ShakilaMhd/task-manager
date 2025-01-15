@@ -4,7 +4,7 @@ import {
   DragDropContext,
   Droppable,
   Draggable,
-  DropResult,
+  type DropResult,
 } from "@hello-pangea/dnd";
 
 import { Task, TaskStatus } from "../types";
@@ -25,6 +25,9 @@ type TasksState = {
 
 interface DataKanbanProps {
   data: Task[];
+  onChange: (
+    tasks: { $id: string; status: TaskStatus; position: number }[]
+  ) => void;
 }
 
 export const DataKanban = ({ data }: DataKanbanProps) => {
@@ -50,8 +53,96 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
     return initialTasks;
   });
 
+  const onDragEnd = useCallback(
+    (result: DropResult) => {
+      if (!result.destination) return;
+
+      const { source, destination } = result;
+      const sourceStatus = source.droppableId as TaskStatus;
+      const destStatus = destination.droppableId as TaskStatus;
+
+      let updatesPayload: {
+        $id: string;
+        status: TaskStatus;
+        position: number;
+      }[] = [];
+
+      setTasks((prevTasks) => {
+        const newTasks = { ...prevTasks };
+        //safty remove the task from the source
+
+        const sourceColumn = [...newTasks[sourceStatus]];
+        const [movedTask] = sourceColumn.splice(source.index, 1);
+
+        //if there is no moved task (shoudent happend, but just in case), retirn to previous state
+        if (!movedTask) {
+          console.log("no task found at the source index");
+          return prevTasks;
+        }
+
+        //craete a new task object with potentially updated status
+        const updatedMovedTask =
+          sourceStatus !== destStatus
+            ? { ...movedTask, status: destStatus }
+            : movedTask;
+
+        //update the source column
+        newTasks[sourceStatus] = sourceColumn;
+
+        // add the task to the destination column
+        const destColumn = [...newTasks[destStatus]];
+        destColumn.splice(destination.index, 0, updatedMovedTask);
+        newTasks[destStatus] = destColumn;
+
+        //prepare minimal update payloads
+        updatesPayload = [];
+
+        //always update the moved task
+        updatesPayload.push({
+          $id: updatedMovedTask.$id,
+          status: destStatus,
+          position: Math.min((destination.index + 1) * 1000, 1_000_000),
+        });
+
+        //update positions for affected tasks in the destination column
+        newTasks[destStatus].forEach((task, index) => {
+          if (task && task.$id !== updatedMovedTask.$id) {
+            const newPosition = Math.min((index + 1) * 1000, 1_000_000);
+            if (task.position !== newPosition) {
+              updatesPayload.push({
+                $id: task.$id,
+                status: destStatus,
+                position: newPosition,
+              });
+            }
+          }
+        });
+
+        //if the task moved between columns, update positions in the source columns
+        if (sourceStatus !== destStatus) {
+          newTasks[sourceStatus].forEach((task, index) => {
+            if (task) {
+              const newPosition = Math.min((index + 1) * 1000, 1_000_000);
+              if (task.position !== newPosition) {
+                updatesPayload.push({
+                  $id: task.$id,
+                  status: sourceStatus,
+                  position: newPosition,
+                });
+              }
+            }
+          });
+        }
+        return newTasks;
+      });
+
+      onChange(updatesPayload);
+    },
+    [onChange]
+  );
+
   return (
-    <DragDropContext onDragEnd={() => {}}>
+    <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex overflow-x-auto">
         {boards.map((board) => {
           return (
@@ -76,18 +167,19 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
                         draggableId={task.$id}
                         index={index}
                       >
-                        {(provided => (
-                            <div 
+                        {(provided) => (
+                          <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            >
-                                {/* {task.name} */}
-                                <KanbanCard task={task}/>
-                            </div>
-                        ))}
+                          >
+                            {/* {task.name} */}
+                            <KanbanCard task={task} />
+                          </div>
+                        )}
                       </Draggable>
                     ))}
+                    {provided.placeholder}
                   </div>
                 )}
               </Droppable>

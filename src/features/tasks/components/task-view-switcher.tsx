@@ -20,7 +20,11 @@ import { TaskStatus } from "../types";
 import { useBulkUpdateTasks } from "../api/use-bulk-update-tasks";
 import { DataCalendar } from "./data-calendar";
 
-export const TaskViewSwitcher = () => {
+interface TaskViewSwitcherProps {
+  hideProjectFilter?: boolean;
+}
+
+export const TaskViewSwitcher = ({hideProjectFilter}: TaskViewSwitcherProps) => {
   const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
 
   const [view, setView] = useQueryState("task-view", {
@@ -44,7 +48,7 @@ export const TaskViewSwitcher = () => {
     (tasks: { $id: string; status: TaskStatus; position: number }[]) => {
       // console.log({tasks})
       bulkUpdate({
-        json: {tasks},
+        json: { tasks },
       });
     },
     [bulkUpdate]
@@ -79,7 +83,7 @@ export const TaskViewSwitcher = () => {
           <DottedSeparator className="my-4" />
         </div>
         {/* add filter */}
-        <DataFilters />
+        <DataFilters hideProjectFilter={hideProjectFilter}/>
         <div className="my-4">
           <DottedSeparator className="my-4" />
         </div>
@@ -99,7 +103,7 @@ export const TaskViewSwitcher = () => {
               />
             </TabsContent>
             <TabsContent value="calendar" className="mt-0">
-              <DataCalendar data={tasks?.documents ?? []}/>
+              <DataCalendar data={tasks?.documents ?? []} />
             </TabsContent>
           </>
         )}

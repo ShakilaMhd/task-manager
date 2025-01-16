@@ -108,27 +108,28 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
           ))}
         </SelectContent>
       </Select>
-
-      <Select
-        defaultValue={projectId ?? undefined}
-        onValueChange={(value) => onProjectChange(value)}
-      >
-        <SelectTrigger className="w-full lg:w-auto h-8 ">
-          <div className="flex items-center pr-2">
-            <FolderIcon className="size-4 h-4 w-4 mr-2" />
-            <SelectValue placeholder="همه پروژه ها" />
-          </div>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">همه پروژه ها </SelectItem>
-          <SelectSeparator />
-          {projectOptions?.map((project) => (
-            <SelectItem key={project.value} value={project.value}>
-              {project.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {!hideProjectFilter && (
+        <Select
+          defaultValue={projectId ?? undefined}
+          onValueChange={(value) => onProjectChange(value)}
+        >
+          <SelectTrigger className="w-full lg:w-auto h-8 ">
+            <div className="flex items-center pr-2">
+              <FolderIcon className="size-4 h-4 w-4 mr-2" />
+              <SelectValue placeholder="همه پروژه ها" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">همه پروژه ها </SelectItem>
+            <SelectSeparator />
+            {projectOptions?.map((project) => (
+              <SelectItem key={project.value} value={project.value}>
+                {project.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
 
       <DatePicker
         placeholder="روزها"

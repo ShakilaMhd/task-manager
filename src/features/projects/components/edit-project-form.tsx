@@ -86,15 +86,8 @@ export const EditProjectForm = ({
       iamge: values.image instanceof File ? values.image : "",
     };
     mutate(
-      { form: finalValues, param: { projectId: initialValues.$id } },
-      {
-        onSuccess: () => {
-          form.reset();
-          // onCancel?.()
-          // router.push(`/workspaces/${data.$id}`);
-          // kk
-        },
-      }
+      { form: finalValues, param: { projectId: initialValues.$id } }
+       
     );
   };
 

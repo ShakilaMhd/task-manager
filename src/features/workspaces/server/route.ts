@@ -43,9 +43,7 @@ const app = new Hono()
     return c.json({ data: workspaces });
   })
 
-  .get(
-    "/:workspaceId",
-    sessionMiddleware, async (c) => {
+  .get("/:workspaceId", sessionMiddleware, async (c) => {
     const user = c.get("user");
     const databases = c.get("databases");
 
@@ -62,12 +60,31 @@ const app = new Hono()
     }
 
     const workspace = await databases.getDocument<Workspace>(
-        DATABASE_ID,
-        WORKSPACES_ID,
-        workspaceId
-    )
+      DATABASE_ID,
+      WORKSPACES_ID,
+      workspaceId
+    );
 
-    return c.json({data: workspace})
+    return c.json({ data: workspace });
+  })
+
+  .get("/:workspaceId/info", sessionMiddleware, async (c) => {
+    const databases = c.get("databases");
+    const { workspaceId } = c.req.param();
+
+    const workspace = await databases.getDocument<Workspace>(
+      DATABASE_ID,
+      WORKSPACES_ID,
+      workspaceId
+    );
+
+    return c.json({
+      data: {
+        $id: workspace.$id,
+        name: workspace.name,
+        imageUrl: workspace.imageUrl,
+      },
+    });
   })
 
   .post(

@@ -129,7 +129,7 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
             ))}
           </SelectContent>
         </Select>
-      )}
+      )} 
 
       <DatePicker
         placeholder="روزها"

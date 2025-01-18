@@ -1,10 +1,13 @@
 "use client";
 
+import { DottedSeparator } from "@/components/dotted-separator";
 import { PageError } from "@/components/page-error";
 import { PageLoader } from "@/components/page-loader";
 import { useGetTask } from "@/features/tasks/api/use-get-task";
+import { TaskBreadcrumbs } from "@/features/tasks/components/task-breadcrumbs";
+import { TaskDescription } from "@/features/tasks/components/task-description";
+import { TaskOverview } from "@/features/tasks/components/task-overview";
 import { useTaskId } from "@/features/tasks/hooks/use-task-id";
-
 
 export const TaskIdClient = () => {
   const taskId = useTaskId();
@@ -14,9 +17,20 @@ export const TaskIdClient = () => {
     return <PageLoader />;
   }
 
-  if(!data) { 
-    return <PageError message="task not found"/>
+  if (!data) {
+    return <PageError message="task not found" />;
   }
 
-  return <div>{JSON.stringify(data)}</div>;
+  return (
+    <div className="flex flex-col">
+      <TaskBreadcrumbs project={data.project} task={data} />
+      <div className="my-6">
+        <DottedSeparator className="my-6" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <TaskOverview task={data} />
+        <TaskDescription task={data} />
+      </div>
+    </div>
+  );
 };

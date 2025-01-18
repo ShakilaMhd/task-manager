@@ -11,7 +11,7 @@ import {
   subMonths,
 } from "date-fns";
 
-import { faIR } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 
 import { Task } from "../types";
@@ -22,7 +22,7 @@ import { EventCard } from "./event-card";
 import { Button } from "@/components/ui/button";
 
 const locales = {
-  "fa-IR": faIR,
+  "en-US": enUS,
 };
 
 const localizer = dateFnsLocalizer({
@@ -84,12 +84,12 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
     id: task.$id,
   }));
 
-  const handleNavigate = (actions: "PREV" | "NEXT" | "ُTODAY") => {
-    if (actions === "PREV") {
+  const handleNavigate = (action: "PREV" | "NEXT" | "ُTODAY") => {
+    if (action === "PREV") {
       setValue(subMonths(value, 1));
-    } else if (actions === "NEXT") {
+    } else if (action === "NEXT") {
       setValue(addMonths(value, 1));
-    } else if (actions === "ُTODAY") {
+    } else if (action === "ُTODAY") {
       setValue(new Date());
     }
   };

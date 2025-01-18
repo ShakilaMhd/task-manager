@@ -84,12 +84,12 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
     id: task.$id,
   }));
 
-  const handleNavigate = (actions: "PREV" | "NEXT" | "ُTODAY") => {
-    if (actions === "PREV") {
+  const handleNavigate = (action: "PREV" | "NEXT" | "ُTODAY") => {
+    if (action === "PREV") {
       setValue(subMonths(value, 1));
-    } else if (actions === "NEXT") {
+    } else if (action === "NEXT") {
       setValue(addMonths(value, 1));
-    } else if (actions === "ُTODAY") {
+    } else if (action === "ُTODAY") {
       setValue(new Date());
     }
   };

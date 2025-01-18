@@ -143,7 +143,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                             type="button"
                             disabled={isPending}
                             variant="destructive"
-                            size="xs"
+                            size="sm"
                             className="w-fit mt-2 p-2"
                             onClick={() => {
                               field.onChange(null);
@@ -158,8 +158,8 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                           <Button
                             type="button"
                             disabled={isPending}
-                            variant="teritary"
-                            size="xs"
+                            variant="secondary"
+                            size="sm"
                             className="w-fit mt-2 p-2"
                             onClick={() => inputRef.current?.click()}
                           >
@@ -179,7 +179,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
               <Button
                 type="submit"
                 size="lg"
-                variant="primary"
+                variant="secondary"
                 disabled={isPending}
               >
                 ایجاد پروژه

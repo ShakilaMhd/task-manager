@@ -65,7 +65,7 @@ export const CreateTaskForm = ({
       {
         onSuccess: () => {
           form.reset();
-          onCancel?.()
+          onCancel?.();
         },
       }
     );
@@ -106,8 +106,6 @@ export const CreateTaskForm = ({
                   <FormItem>
                     <FormLabel>تاریخ انجام</FormLabel>
                     <FormControl>
-                      {/* <Input {...field} placeholder="نام تسک" /> */}
-                      {/* TODO: Date picker */}
                       <DatePicker {...field} />
                     </FormControl>
                     <FormMessage />
@@ -227,7 +225,7 @@ export const CreateTaskForm = ({
               <Button
                 type="submit"
                 size="lg"
-                variant="primary"
+                variant="secondary"
                 disabled={isPending}
               >
                 ایجاد تسک

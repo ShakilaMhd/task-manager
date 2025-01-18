@@ -187,7 +187,7 @@ export const EditProjectForm = ({
                               type="button"
                               disabled={isPending}
                               variant="destructive"
-                              size="xs"
+                              size="sm"
                               className="w-fit mt-2 p-2"
                               onClick={() => {
                                 field.onChange(null);
@@ -202,8 +202,8 @@ export const EditProjectForm = ({
                             <Button
                               type="button"
                               disabled={isPending}
-                              variant="teritary"
-                              size="xs"
+                              variant="secondary"
+                              size="sm"
                               className="w-fit mt-2 p-2"
                               onClick={() => inputRef.current?.click()}
                             >
@@ -223,7 +223,7 @@ export const EditProjectForm = ({
                 <Button
                   type="submit"
                   size="lg"
-                  variant="primary"
+                  variant="secondary"
                   disabled={isPending}
                 >
                   ذخیره تغییرات{" "}

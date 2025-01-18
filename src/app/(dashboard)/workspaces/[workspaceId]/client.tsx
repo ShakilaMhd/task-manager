@@ -77,7 +77,7 @@ export const TaskList = ({ data, total }: TaskListProps) => {
       <div className="bg-muted rounded-lg p-4">
         <div className="flex items-center justify-between">
           <p className="text-lg font-semibold">تسک ها {total}</p>
-          <Button variant="muted" size="icon" onClick={createTask}>
+          <Button variant="default" size="icon" onClick={createTask}>
             <PlusIcon className="size-4 text-neutral-400" />
           </Button>
         </div>
@@ -111,7 +111,7 @@ export const TaskList = ({ data, total }: TaskListProps) => {
             تسکی پیدا نشد
           </li>
         </ul>
-        <Button variant="muted" className="mt-4 w-full" asChild>
+        <Button variant="default" className="mt-4 w-full" asChild>
           <Link href={`/workspaces/${workspaceId}/tasks`}>نمایش همه</Link>
         </Button>
       </div>
